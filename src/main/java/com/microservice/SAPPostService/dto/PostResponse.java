@@ -16,7 +16,7 @@ import lombok.Data;
 public class PostResponse {
     private Long postId;
 
-    private Long authorId;
+    private Long userId;
 
     private String title;
 

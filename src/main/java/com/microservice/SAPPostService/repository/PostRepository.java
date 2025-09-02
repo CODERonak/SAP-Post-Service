@@ -12,5 +12,5 @@ import com.microservice.SAPPostService.model.Post;
  */
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    boolean existsByAuthorId(Long authorId);
+    boolean existsByUserId(Long userId);
 }

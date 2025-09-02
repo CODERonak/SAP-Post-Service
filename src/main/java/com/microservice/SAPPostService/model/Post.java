@@ -21,7 +21,7 @@ public class Post {
     private Long postId;
 
     @Column(name = "author_id")
-    private Long authorId;
+    private Long userId;
 
     @Column(name = "title")
     private String title;

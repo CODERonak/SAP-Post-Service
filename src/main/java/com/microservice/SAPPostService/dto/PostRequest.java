@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class PostRequest {
     @NotNull
-    private Long authorId;
+    private Long userId;
 
     @NotBlank
     private String title;
