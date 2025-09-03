@@ -12,6 +12,14 @@ import com.microservice.SAPPostService.repository.PostRepository;
 
 import lombok.AllArgsConstructor;
 
+/*
+ * This is the service class for the posts table in the database.
+ * It has the folowing methods:
+ * - createPost: create a new post
+ * - deletePost: delete a post
+ * - getPostsByUserId: get all posts by userId
+ */
+
 @Service
 @AllArgsConstructor
 public class PostService {
@@ -19,14 +27,13 @@ public class PostService {
     private final PostMapper mapper;
     private final UserClient client;
 
-    public PostResponse createPost(Long userId, PostRequest request) {
-        UserResponse user = client.getUserById(userId);
+    public PostResponse createPost(PostRequest request) {
+        UserResponse user = client.getUserById(request.getUserId());
 
         if (user == null)
             throw new RuntimeException("User not found");
 
         Post post = mapper.toModel(request);
-        post.setUserId(userId);
         Post saved = repository.save(post);
         return mapper.toResponse(saved);
     }
