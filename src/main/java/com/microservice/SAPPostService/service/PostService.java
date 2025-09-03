@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 
 import com.microservice.SAPPostService.client.UserClient;
 import com.microservice.SAPPostService.dto.*;
+import com.microservice.SAPPostService.exceptions.custom.NotFoundException;
 import com.microservice.SAPPostService.mapper.PostMapper;
 import com.microservice.SAPPostService.model.Post;
 import com.microservice.SAPPostService.repository.PostRepository;
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 
 /*
@@ -28,10 +30,17 @@ public class PostService {
     private final UserClient client;
 
     public PostResponse createPost(PostRequest request) {
-        UserResponse user = client.getUserById(request.getUserId());
+
+        UserResponse user = null;
+
+        try {
+            user = client.getUserById(request.getUserId());
+        } catch (FeignException.NotFound e) {
+            throw new NotFoundException("User with id " + request.getUserId() + " not found");
+        }
 
         if (user == null)
-            throw new RuntimeException("User not found");
+            throw new NotFoundException("User not found");
 
         Post post = mapper.toModel(request);
         Post saved = repository.save(post);
@@ -42,16 +51,17 @@ public class PostService {
         if (repository.existsById(postId)) {
             repository.deleteById(postId);
         } else {
-            throw new RuntimeException("Post not found");
+            throw new NotFoundException("Post not found");
         }
     }
 
     public List<PostResponse> getPostsByUserId(Long userId) {
 
-        UserResponse user = client.getUserById(userId);
-
-        if (user == null)
-            throw new RuntimeException("User not found");
+        try {
+            client.getUserById(userId);
+        } catch (FeignException.NotFound e) {
+            throw new NotFoundException("User with id " + userId + " not found");
+        }
 
         List<Post> posts = repository.findByUserId(userId);
         return mapper.toResponseList(posts);
