@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
  * This is the controller class for the posts table in the database.
  * It has the folowing methods:
  * - createPost: create a new post
+ * - getPostById: get post by id
  * - deletePost: delete a post
  * - getAllPostsByUserId: get all posts by userId
  */
@@ -30,6 +31,12 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@RequestBody @Valid PostRequest request) {
         PostResponse response = service.createPost(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
+        PostResponse response = service.getPostById(postId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{postId}")

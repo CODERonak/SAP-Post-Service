@@ -47,6 +47,12 @@ public class PostService {
         return mapper.toResponse(saved);
     }
 
+    public PostResponse getPostById(Long postId) {
+        Post post = repository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("Post not found"));
+        return mapper.toResponse(post);
+    }
+
     public void deletePost(Long postId) {
         if (repository.existsById(postId)) {
             repository.deleteById(postId);
